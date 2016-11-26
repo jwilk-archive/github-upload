@@ -86,7 +86,7 @@ async def amain(options):
     }
     async with aiohttp.ClientSession(headers=headers) as session:
         url = '/repos/{repo}/git/refs/tags/{tag}'.format(repo=options.repo, tag=options.tag)
-        taginfo = await json_request(session.get, url)
+        await json_request(session.get, url)
         url = '/repos/{repo}/releases/tags/{tag}'.format(repo=options.repo, tag=options.tag)
         try:
             relinfo = await json_request(session.get, url)
