@@ -193,6 +193,10 @@ def guess_github_repo():
             'cannot parse git URL {url!r}'.format(url=url)
         )
 
+def guess_github_token():
+    # Steal the git-hub <https://github.com/sociomantic/git-hub> token
+    return git('config --get hub.oauthtoken')
+
 def main():
     ap = argparse.ArgumentParser()
     gr = ap.add_mutually_exclusive_group(required=True)
@@ -209,7 +213,11 @@ def main():
     try:
         options.token = os.environ[token_env_var]
     except KeyError:
-        ap.error('${var} is not set'.format(var=token_env_var))
+        try:
+            options.token = guess_github_token()
+        except GitError:
+            raise
+            ap.error('${var} is not set'.format(var=token_env_var))
     options.repo = options.repository
     del options.repository
     if options.git_remote:
