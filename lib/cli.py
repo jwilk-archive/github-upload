@@ -50,7 +50,7 @@ class GitHubError(RuntimeError):
         self.args = (msg,)
         self.status = status
 
-async def json_request(method, url, headers={}, **kwargs):
+async def json_request(method, url, headers=(), **kwargs):
     if json_request.debug:
         print('*', method.__name__.upper(), url, file=sys.stderr)
     url = urllib.parse.urljoin(api_endpoint, url)
