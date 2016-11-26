@@ -161,11 +161,11 @@ def ap_tag(tag):
         raise ValueError
 ap_tag.__name__ = 'tag'
 
-class GitRemoteError(Exception):
+class GitError(Exception):
     pass
 
-def guess_github_repo():
-    cmdline = 'git remote get-url origin'
+def git(args):
+    cmdline = 'git {args}'.format(args=args)
     cproc = subprocess.run(
         cmdline.split(),
         stdout=subprocess.PIPE,
@@ -173,20 +173,23 @@ def guess_github_repo():
         universal_newlines=True,
     )
     if cproc.returncode != 0:
-        raise GitRemoteError(
+        raise GitError(
             '"{cmdline}" failed:\n{msg}'.format(
                 cmdline=cmdline,
                 msg=cproc.stderr.strip()
             )
         )
-    url = cproc.stdout.rstrip()
+    return cproc.stdout.rstrip()
+
+def guess_github_repo():
+    url = git('remote get-url origin')
     (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)  # pylint: disable=unused-variable
     if netloc == 'github.com':
         if path.endswith('.git'):
             path = path[:-4]
         return path.lstrip('/')
     else:
-        raise GitRemoteError(
+        raise GitError(
             'cannot parse git URL {url!r}'.format(url=url)
         )
 
@@ -212,7 +215,7 @@ def main():
     if options.git_remote:
         try:
             options.repo = guess_github_repo()
-        except GitRemoteError as exc:
+        except GitError as exc:
             ap.error(exc)
     assert options.repo is not None
     if options.delete_all:
