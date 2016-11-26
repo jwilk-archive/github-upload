@@ -95,10 +95,7 @@ async def amain(options):
             if exc.status == http.HTTPStatus.NOT_FOUND:
                 relinfo = {}
         if not relinfo:
-            data = dict(
-                tag_name=options.tag,
-                target_commitish=taginfo['object']['sha']
-            )
+            data = dict(tag_name=options.tag)
             data = json.dumps(data)
             url = '/repos/{repo}/releases'.format(repo=options.repo)
             relinfo = await json_request(session.post, url, data=data)
