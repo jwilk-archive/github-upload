@@ -80,10 +80,9 @@ def file_reader(file, chunk_size=4096, callback=int):
             return
 
 async def amain(options):
-    token = os.environ['GITHUB_TOKEN']
     headers = {
         'User-Agent': user_agent,
-        'Authorization': ('token ' + token),
+        'Authorization': ('token ' + options.token),
     }
     async with aiohttp.ClientSession(headers=headers) as session:
         url = '/repos/{repo}/git/refs/tags/{tag}'.format(repo=options.repo, tag=options.tag)
@@ -203,6 +202,11 @@ def main():
     ap.add_argument('--debug', action='store_true')
     ap.add_argument('files', metavar='FILE', nargs='*', help='files to upload')
     options = ap.parse_args()
+    token_env_var = 'GITHUB_TOKEN'
+    try:
+        options.token = os.environ[token_env_var]
+    except KeyError:
+        ap.error('${var} is not set'.format(var=token_env_var))
     options.repo = options.repository
     del options.repository
     if options.git_remote:
