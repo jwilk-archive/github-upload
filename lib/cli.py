@@ -180,7 +180,7 @@ def guess_github_repo():
             )
         )
     url = cproc.stdout.rstrip()
-    (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
+    (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)  # pylint: disable=unused-variable
     if netloc == 'github.com':
         if path.endswith('.git'):
             path = path[:-4]
