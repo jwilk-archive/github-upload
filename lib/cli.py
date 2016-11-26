@@ -216,7 +216,6 @@ def main():
         try:
             options.token = guess_github_token()
         except GitError:
-            raise
             ap.error('${var} is not set'.format(var=token_env_var))
     options.repo = options.repository
     del options.repository
