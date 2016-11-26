@@ -27,6 +27,7 @@ import io
 import json
 import os
 import re
+import subprocess
 import sys
 import urllib.parse
 
@@ -164,9 +165,40 @@ def ap_tag(tag):
         raise ValueError
 ap_tag.__name__ = 'tag'
 
+class GitRemoteError(Exception):
+    pass
+
+def guess_github_repo():
+    cmdline = 'git remote get-url origin'
+    cproc = subprocess.run(
+        cmdline.split(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    if cproc.returncode != 0:
+        raise GitRemoteError(
+            '"{cmdline}" failed:\n{msg}'.format(
+                cmdline=cmdline,
+                msg=cproc.stderr.strip()
+            )
+        )
+    url = cproc.stdout.rstrip()
+    (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
+    if netloc == 'github.com':
+        if path.endswith('.git'):
+            path = path[:-4]
+        return path.lstrip('/')
+    else:
+        raise GitRemoteError(
+            'cannot parse git URL {url!r}'.format(url=url)
+        )
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('-r', '--repository', type=ap_repository, required=True)
+    gr = ap.add_mutually_exclusive_group(required=True)
+    gr.add_argument('-r', '--repository', type=ap_repository)
+    gr.add_argument('-R', '--git-remote', action='store_true')
     ap.add_argument('-t', '--tag', type=ap_tag, required=True)
     ap.add_argument('--overwrite', action='store_true', help='overwrite existing files')
     ap.add_argument('--delete', action='store_true', help='delete files')
@@ -175,6 +207,13 @@ def main():
     ap.add_argument('files', metavar='FILE', nargs='*', help='files to upload')
     options = ap.parse_args()
     options.repo = options.repository
+    del options.repository
+    if options.git_remote:
+        try:
+            options.repo = guess_github_repo()
+        except GitRemoteError as exc:
+            ap.error(exc)
+    assert options.repo is not None
     if options.delete_all:
         if len(options.files) > 0:
             ap.error('too many arguments')
