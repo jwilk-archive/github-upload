@@ -2,7 +2,7 @@ Overview
 ========
 
 **github-upload** is a command-line interface
-for uploading files uploading files to GitHub releases.
+for uploading files to GitHub releases.
 
 Prerequisites
 =============
