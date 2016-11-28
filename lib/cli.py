@@ -244,8 +244,10 @@ def main():
     if options.debug:
         json_request.debug = True
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(amain(options))
-    loop.close()
+    try:
+        loop.run_until_complete(amain(options))
+    finally:
+        loop.close()
 
 if __name__ == '__main__':
     main()
