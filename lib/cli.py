@@ -143,6 +143,7 @@ async def amain(options):
                         url,
                         headers=headers,
                         data=reader,
+                        timeout=None,
                     )
                     progress.desc = '{url} '.format(url=fileinfo['browser_download_url'])
                     progress.refresh()
