@@ -29,11 +29,17 @@ import os
 import re
 import subprocess
 import sys
+import unittest.mock
 import urllib.parse
 
 import aiohttp
-import tqdm
 import uritemplate
+
+with unittest.mock.patch.dict(os.environ, PATH='/nonexistent'):
+    # tqdm wants to execute git for no good reason:
+    # https://github.com/tqdm/tqdm/issues/328
+    # Let's foil this plan:
+    import tqdm
 
 user_agent = 'github-upload (https://github.com/jwilk/github-upload)'
 api_endpoint = 'https://api.github.com'
