@@ -189,7 +189,7 @@ def git(args):
     return cproc.stdout.rstrip()
 
 def guess_github_repo():
-    url = git('remote get-url origin')
+    url = git('ls-remote --get-url')
     (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)  # pylint: disable=unused-variable
     if netloc == 'github.com':
         if path.endswith('.git'):
