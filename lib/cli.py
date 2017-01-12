@@ -217,9 +217,9 @@ def guess_github_token(trusted_cwd=False):
 def main():
     ap = argparse.ArgumentParser()
     gr = ap.add_mutually_exclusive_group(required=True)
-    gr.add_argument('-r', '--repository', type=ap_repository)
-    gr.add_argument('-R', '--git-remote', action='store_true')
-    ap.add_argument('-t', '--tag', type=ap_tag, required=True)
+    gr.add_argument('-r', '--repository', help='upload to the specified repo', type=ap_repository)
+    gr.add_argument('-R', '--git-remote', help='upload to "origin" remote of current git repo', action='store_true')
+    ap.add_argument('-t', '--tag', help='upload to the specified tag', type=ap_tag, required=True)
     ap.add_argument('--overwrite', action='store_true', help='overwrite existing files')
     ap.add_argument('--delete', action='store_true', help='delete files')
     ap.add_argument('--delete-all', action='store_true', help='delete the whole release')
