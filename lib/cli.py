@@ -27,6 +27,7 @@ import io
 import json
 import os
 import re
+import ssl
 import subprocess
 import sys
 import unittest.mock
@@ -90,7 +91,12 @@ async def amain(options):
         'User-Agent': user_agent,
         'Authorization': ('token ' + options.token),
     }
-    async with aiohttp.ClientSession(headers=headers) as session:
+    tls_options = {}
+    if options.ca_file is not None:
+        tls_options.update(cafile=options.ca_file)
+    tls_context = ssl.create_default_context(**tls_options)
+    connector = aiohttp.TCPConnector(ssl_context=tls_context)
+    async with aiohttp.ClientSession(connector=connector, headers=headers) as session:
         url = '/repos/{repo}/git/refs/tags/{tag}'.format(repo=options.repo, tag=options.tag)
         await json_request(session.get, url)
         url = '/repos/{repo}/releases/tags/{tag}'.format(repo=options.repo, tag=options.tag)
@@ -217,6 +223,7 @@ def main():
     ap.add_argument('--overwrite', action='store_true', help='overwrite existing files')
     ap.add_argument('--delete', action='store_true', help='delete files')
     ap.add_argument('--delete-all', action='store_true', help='delete the whole release')
+    ap.add_argument('--ca-file', metavar='FILE', help='trust these CA certificate(s)')
     ap.add_argument('--debug', action='store_true')
     ap.add_argument('files', metavar='FILE', nargs='*', help='files to upload')
     options = ap.parse_args()
