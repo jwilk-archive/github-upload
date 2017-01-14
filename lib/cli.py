@@ -98,7 +98,13 @@ async def amain(options):
     connector = aiohttp.TCPConnector(ssl_context=tls_context)
     async with aiohttp.ClientSession(connector=connector, headers=headers) as session:
         url = '/repos/{repo}/git/refs/tags/{tag}'.format(repo=options.repo, tag=options.tag)
-        await json_request(session.get, url)
+        try:
+            await json_request(session.get, url)
+        except GitHubError as exc:
+            if exc.status == http.HTTPStatus.NOT_FOUND:
+                message = 'https://github.com/{repo}: tag {tag} not found'.format(repo=options.repo, tag=options.tag)
+                print(message, file=sys.stderr)
+                sys.exit(1)
         url = '/repos/{repo}/releases/tags/{tag}'.format(repo=options.repo, tag=options.tag)
         try:
             relinfo = await json_request(session.get, url)
