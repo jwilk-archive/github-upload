@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Copyright © 2016 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
