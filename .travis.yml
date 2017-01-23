@@ -8,8 +8,10 @@ install:
 - pip install uritemplate
 - pip install tqdm
 - pip install pyflakes
+- pip install docutils
 script:
 - ./github-upload --help
 - private/run-pyflakes
+- private/check-rst
 
 # vim:ts=2 sts=2 sw=2 et
