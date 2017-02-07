@@ -211,7 +211,7 @@ def guess_github_repo():
         )
 
 def guess_github_token(trusted_cwd=False):
-    # Steal the git-hub <https://github.com/sociomantic/git-hub> token
+    # Steal the git-hub <https://github.com/sociomantic-tsunami/git-hub> token
     if trusted_cwd:
         options = ''
     else:
