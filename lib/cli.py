@@ -74,8 +74,8 @@ async def json_request(method, url, headers=(), **kwargs):
     return body
 json_request.debug = False
 
-@asyncio.coroutine
-def file_reader(file, chunk_size=4096, callback=int):
+
+def _file_reader(file, chunk_size=4096, callback=int):
     while True:
         chunk = file.read(chunk_size)
         if chunk:
@@ -83,6 +83,18 @@ def file_reader(file, chunk_size=4096, callback=int):
             callback(len(chunk))
         else:
             return
+
+try:
+    aiohttp.streamer
+except AttributeError:
+    # aiohttp << 2.0
+    file_reader = asyncio.coroutine(_file_reader)
+else:
+    # aiohttp >= 2.0
+    @aiohttp.streamer
+    def file_reader(writer, file, chunk_size=4096, callback=int):
+        for chunk in _file_reader(file, chunk_size, callback):
+            yield from writer.write(chunk)
 
 async def amain(options):
     headers = {
