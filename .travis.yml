@@ -9,10 +9,11 @@ install:
 - pip install aiohttp
 - pip install uritemplate
 - pip install tqdm
-- pip install pyflakes
+- pip install pydiatra pyflakes
 - pip install docutils
 script:
 - ./github-upload --help
+- private/run-pydiatra
 - private/run-pyflakes
 - private/check-rst
 
