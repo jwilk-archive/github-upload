@@ -16,12 +16,12 @@ Prerequisites
 * tqdm_
 
 .. _aiohttp:
-   https://pypi.python.org/pypi/aiohttp
+   https://pypi.org/project/aiohttp/
 
 .. _uritemplate:
-   https://pypi.python.org/pypi/uritemplate
+   https://pypi.org/project/uritemplate/
 
 .. _tqdm:
-   https://pypi.python.org/pypi/tqdm
+   https://pypi.org/project/tqdm/
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et
