@@ -10,11 +10,11 @@ install:
 - pip install uritemplate
 - pip install tqdm
 - pip install pydiatra pyflakes
-- pip install docutils
+- pip install restructuredtext-lint
 script:
 - ./github-upload --help
 - python3 -m pydiatra .
 - python3 -m pyflakes .
-- private/check-rst
+- restructuredtext-lint --encoding=UTF-8 README
 
 # vim:ts=2 sts=2 sw=2 et
