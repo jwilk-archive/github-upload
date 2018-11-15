@@ -274,7 +274,7 @@ def main():
                     if size == 0:
                         ap.error('{path}: cannot upload empty files'.format(path=path))
             except OSError as exc:
-                ap.error('{path}: {exc}'.format(path=path, exc=exc))
+                ap.error('{path}: {exc}'.format(path=path, exc=exc.strerror))
     if options.debug:
         json_request.debug = True
     loop = asyncio.get_event_loop()
