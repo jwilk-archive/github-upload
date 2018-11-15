@@ -273,7 +273,7 @@ def main():
                     size = file.tell()
                     if size == 0:
                         ap.error('{path}: cannot upload empty files'.format(path=path))
-            except IOError as exc:
+            except OSError as exc:
                 ap.error('{path}: {exc}'.format(path=path, exc=exc))
     if options.debug:
         json_request.debug = True
