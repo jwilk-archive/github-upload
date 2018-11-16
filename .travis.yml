@@ -6,11 +6,11 @@ python:
 - "3.6"
 - "3.7-dev"
 install:
-- pip install aiohttp
-- pip install uritemplate
-- pip install tqdm
-- pip install pydiatra pyflakes
-- pip install restructuredtext-lint
+- python3 -m pip install aiohttp
+- python3 -m pip install uritemplate
+- python3 -m pip install tqdm
+- python3 -m pip install pydiatra pyflakes
+- python3 -m pip install restructuredtext-lint
 script:
 - ./github-upload --help
 - python3 -m pydiatra .
