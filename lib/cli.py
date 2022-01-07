@@ -73,7 +73,6 @@ async def json_request(method, url, headers=(), **kwargs):
     return body
 json_request.debug = False
 
-
 def _file_reader(file, chunk_size=4096, callback=int):
     while True:
         chunk = file.read(chunk_size)
