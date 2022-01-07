@@ -49,7 +49,7 @@ class GitHubError(RuntimeError):
         msg = '{status} {reason}\n\n{body}'.format(
             status=status,
             reason=reason,
-            body=json.dumps(body, sort_keys=True, indent=4, separators=(',', ': '))
+            body=json.dumps(body, sort_keys=True, indent=4)
         )
         self.args = (msg,)
         self.status = status
