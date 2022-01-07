@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 import argparse
-import asyncio
 import http
 import io
 import json
@@ -29,6 +28,8 @@ import subprocess
 import sys
 import unittest.mock
 import urllib.parse
+
+from .compat import asyncio
 
 import aiohttp
 import uritemplate
@@ -269,11 +270,7 @@ def main():
                 ap.error('{path}: {exc}'.format(path=path, exc=exc.strerror))
     if options.debug:
         json_request.debug = True
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(amain(options))
-    finally:
-        loop.close()
+    asyncio.run(amain(options))
 
 if __name__ == '__main__':
     main()
