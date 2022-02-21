@@ -101,15 +101,15 @@ async def amain(options):
         'Authorization': ('token ' + options.token),
     }
     async with aiohttp.ClientSession(headers=headers) as session:
-        url = '/repos/{repo}/git/refs/tags/{tag}'.format(repo=options.repo, tag=options.tag)
+        url = f'/repos/{options.repo}/git/refs/tags/{options.tag}'
         try:
             await json_request(session.get, url)
         except GitHubError as exc:
             if exc.status == http.HTTPStatus.NOT_FOUND:
-                message = 'https://github.com/{repo}: tag {tag} not found'.format(repo=options.repo, tag=options.tag)
+                message = f'https://github.com/{options.repo}: tag {options.tag} not found'
                 print(message, file=sys.stderr)
                 sys.exit(1)
-        url = '/repos/{repo}/releases/tags/{tag}'.format(repo=options.repo, tag=options.tag)
+        url = f'/repos/{options.repo}/releases/tags/{options.tag}'
         try:
             relinfo = await json_request(session.get, url)
         except GitHubError as exc:
@@ -118,7 +118,7 @@ async def amain(options):
         if not relinfo:
             data = dict(tag_name=options.tag)
             data = json.dumps(data)
-            url = '/repos/{repo}/releases'.format(repo=options.repo)
+            url = f'/repos/{options.repo}/releases'
             relinfo = await json_request(session.post, url, data=data)
         if options.delete_all:
             url = relinfo['url']
@@ -142,7 +142,7 @@ async def amain(options):
                     print('{url} deleted'.format(url=asset['browser_download_url']))
                 else:
                     url = asset['browser_download_url']
-                    print('{url} already exists; maybe try --overwrite?'.format(url=url), file=sys.stderr)
+                    print(f'{url} already exists; maybe try --overwrite?', file=sys.stderr)
                     sys.exit(1)
             if options.delete:
                 continue
@@ -156,7 +156,7 @@ async def amain(options):
                     'Content-Type': 'application/octet-stream',
                 }
                 with tqdm.tqdm(unit='B', unit_scale=True, leave=True) as progress:
-                    progress.desc = '{path} '.format(path=path)
+                    progress.desc = f'{path} '
                     progress.total = size
                     progress.refresh()
                     reader = file_reader(file, callback=progress.update)
@@ -188,7 +188,7 @@ class GitError(Exception):
     pass
 
 def git(args):
-    cmdline = 'git {args}'.format(args=args)
+    cmdline = f'git {args}'
     cproc = subprocess.run(
         cmdline.split(),
         stdout=subprocess.PIPE,
@@ -213,7 +213,7 @@ def guess_github_repo():
         return path.lstrip('/')
     else:
         raise GitError(
-            'cannot parse git URL {url!r}'.format(url=url)
+            f'cannot parse git URL {url!r}'
         )
 
 def guess_github_token(trusted_cwd=False):
@@ -243,7 +243,7 @@ def main():
         try:
             options.token = guess_github_token(trusted_cwd=options.git_remote)
         except GitError:
-            ap.error('${var} is not set'.format(var=token_env_var))
+            ap.error(f'${token_env_var} is not set')
     options.repo = options.repository
     del options.repository
     if options.git_remote:
@@ -265,9 +265,9 @@ def main():
                     file.seek(0, io.SEEK_END)
                     size = file.tell()
                     if size == 0:
-                        ap.error('{path}: cannot upload empty files'.format(path=path))
+                        ap.error(f'{path}: cannot upload empty files')
             except OSError as exc:
-                ap.error('{path}: {exc}'.format(path=path, exc=exc.strerror))
+                ap.error(f'{path}: {exc.strerror}')
     if options.debug:
         json_request.debug = True
     asyncio.run(amain(options))
