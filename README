@@ -7,7 +7,7 @@ for uploading files to GitHub releases.
 Prerequisites
 =============
 
-* Python ≥ 3.5
+* Python ≥ 3.6
 
 * aiohttp_
 
